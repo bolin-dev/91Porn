@@ -25,6 +25,9 @@
 
 (function () {
   GM_addStyle(`
+  :root {
+    color-scheme: dark;
+  }
   html body {
     padding-top: 135px !important;
   }
