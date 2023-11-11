@@ -129,7 +129,7 @@
   }
   `);
 
-  if (location.pathname === "/v.php") {
+  if (location.pathname !== "/view_video.php") {
     return document.addEventListener("click", e => {
       const target = e.target.closest(".well.well-sm a");
       if (!target) return;
