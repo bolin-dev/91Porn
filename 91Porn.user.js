@@ -29,13 +29,14 @@
     padding-top: 135px !important;
   }
   br,
+  .clear,
   .navbar.navbar-inverse.navbar-fixed-top + div,
   #videodetails-content span.title > br + div {
-    display: none;
+    display: none !important;
   }
   #search_form {
     & .input-group {
-      margin-bottom: 15px;
+      margin-bottom: 15px !important;
     }
     & input.form-control {
       border: none !important;
@@ -45,94 +46,97 @@
       border: none !important;
     }
     & .btn-primary {
-      margin: 0;
+      margin: 0 !important;
       &:hover {
-        border-color: #e6ac77;
+        border-color: #e6ac77 !important;
       }
     }
   }
   .well,
   .login_register_header {
-    margin-bottom: 15px;
+    margin-bottom: 15px !important;
   }
   .row:has(> .col-xs-12.col-sm-4.col-md-3.col-lg-3, > .col-md-8.col-ms-8.col-xs-12.video-border) {
-    margin-inline: -7.5px;
+    margin-inline: -7.5px !important;
   }
   .col-xs-12.col-sm-4.col-md-3.col-lg-3,
   .col-md-8.col-ms-8.col-xs-12.video-border,
   .col-md-4.col-ms-4.col-xs-12 {
-    padding-inline: 7.5px;
+    padding-inline: 7.5px !important;
   }
   .well-sm {
-    padding: 7.5px;
-    overflow: hidden;
+    padding: 7.5px !important;
+    overflow: hidden !important;
   }
   .thumb-overlay {
-    margin: -7.5px -7.5px 0;
+    margin: -7.5px -7.5px 0 !important;
     & .img-responsive {
-      width: 100%;
+      width: 100% !important;
       height: 135px !important;
-      object-fit: cover;
+      object-fit: cover !important;
     }
     & video {
-      background-color: #323232;
+      background-color: #323232 !important;
     }
   }
-  .clear {
-    display: none;
-  }
   .pagingnav {
-    padding: 0;
+    padding: 0 !important;
     & form {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 15px !important;
       & :is(span.pagingnav, a, .page_number) {
-        margin: 0;
-        height: 34px;
-        min-width: 34px;
+        margin: 0 !important;
+        height: 34px !important;
+        min-width: 34px !important;
       }
     }
   }
   #footer-container {
-    margin-top: 15px;
+    margin-top: 15px !important;
   }
   .gotop .fa {
-    line-height: inherit;
+    line-height: inherit !important;
   }
   #videodetails {
-    padding: 0;
-    margin-bottom: 0;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
     & .login_register_header {
-      margin-bottom: 0;
+      margin-bottom: 0 !important;
     }
     & div:has(> a > .ad_img) {
-      display: none;
+      display: none !important;
     }
     & .video-container {
-      padding: 0;
+      padding: 0 !important;
     }
   }
   #useraction {
     margin-block: 15px !important;
   }
   .well-filters {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
+  }
+  .video-container {
+    background-color: #000 !important;
+    & .video-js {
+      opacity: 0;
+    }
   }
   `);
 
-  document.addEventListener("click", e => {
-    const target = e.target.closest(".well.well-sm a");
-    if (!target) return;
+  if (location.pathname === "/v.php") {
+    return document.addEventListener("click", e => {
+      const target = e.target.closest(".well.well-sm a");
+      if (!target) return;
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
+      e.stopPropagation();
 
-    GM_openInTab(target.href, { active: true, insert: true, setParent: true });
-  });
-
-  if (location.pathname !== "/view_video.php") return;
+      GM_openInTab(target.href, { active: true, insert: true, setParent: true });
+    });
+  }
 
   GM_addElement(document.head, "link", {
     href: "https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.min.css",
@@ -172,14 +176,17 @@
     container.innerHTML = `<video controls crossorigin playsinline poster="${poster}"></video>`;
 
     const video = container.querySelector("video");
-    new Plyr(video, { disableContextMenu: false, resetOnEnd: true });
+    new Plyr(video, {
+      resetOnEnd: true,
+      keyboard: { focused: true, global: true },
+    });
 
-    if (!Hls.isSupported()) {
-      video.src = source;
-    } else {
+    if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(source);
-      hls.attachMedia(video);
+      return hls.attachMedia(video);
     }
+
+    video.src = source;
   }
 })();
