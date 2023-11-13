@@ -36,6 +36,7 @@
   }
   br,
   .clear,
+  #userinfo,
   .navbar.navbar-inverse.navbar-fixed-top + div,
   #videodetails-content span.title > br + div {
     display: none !important;
