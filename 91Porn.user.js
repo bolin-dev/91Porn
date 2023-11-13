@@ -24,6 +24,9 @@
 // ==/UserScript==
 
 (function () {
+  const { pathname } = location;
+  if (pathname === "/") return;
+
   GM_addStyle(`
   :root {
     color-scheme: dark;
@@ -129,9 +132,9 @@
   }
   `);
 
-  if (location.pathname !== "/view_video.php") {
+  if (pathname !== "/view_video.php") {
     return document.addEventListener("click", e => {
-      const target = e.target.closest(".well.well-sm a");
+      const target = e.target.closest(".well.well-sm.videos-text-align a");
       if (!target) return;
 
       e.preventDefault();
@@ -147,12 +150,12 @@
     type: "text/css",
   });
 
-  document.addEventListener("DOMContentLoaded", async () => {
+  document.addEventListener("DOMContentLoaded", () => {
     const vid = document.querySelector("div#VID").textContent;
     if (!vid) return;
 
     GM_xmlhttpRequest({
-      method: "GET",
+      method: "HEAD",
       url: `https://cns.killcovid2021.com//m3u8/${vid}/${vid}.m3u8`,
       onload: () => setPlayer(vid),
       onerror: () => setPlayer(vid, "mp4"),
@@ -179,10 +182,7 @@
     container.innerHTML = `<video controls crossorigin playsinline poster="${poster}"></video>`;
 
     const video = container.querySelector("video");
-    new Plyr(video, {
-      resetOnEnd: true,
-      keyboard: { focused: true, global: true },
-    });
+    new Plyr(video, { resetOnEnd: true, keyboard: { focused: true, global: true } });
 
     if (Hls.isSupported()) {
       const hls = new Hls();
