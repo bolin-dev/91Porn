@@ -3,12 +3,13 @@
 // @namespace       91Porn@blc
 // @version         0.0.1
 // @description     解除观看限制
-// @icon            https://raw.githubusercontent.com/bolin-dev/JavPack/main/static/logo.png
-// @grant           GM_addElement
-// @grant           GM_addStyle
-// @grant           GM_notification
-// @grant           GM_openInTab
+// @icon            https://s1.ax1x.com/2022/04/01/q5lzYn.png
 // @grant           GM_xmlhttpRequest
+// @grant           GM_notification
+// @grant           GM_addElement
+// @grant           GM_openInTab
+// @grant           GM_addStyle
+// @grant           GM_info
 // @author          blc
 // @homepage        https://github.com/bolin-dev
 // @require         https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js
@@ -134,7 +135,7 @@
   `);
 
   if (pathname !== "/view_video.php") {
-    return document.addEventListener("click", e => {
+    return document.addEventListener("click", (e) => {
       const target = e.target.closest(".well.well-sm.videos-text-align a");
       if (!target) return;
 
@@ -157,15 +158,16 @@
 
     GM_xmlhttpRequest({
       method: "HEAD",
+      timeout: 5000,
       url: `https://cns.killcovid2021.com//m3u8/${vid}/${vid}.m3u8`,
       onload: () => setPlayer(vid),
       onerror: () => setPlayer(vid, "mp4"),
       ontimeout: () => {
         GM_notification({
           text: "请求超时",
-          title: "91Porn",
-          tag: "91Porn Userscript",
-          image: "https://raw.githubusercontent.com/bolin-dev/JavPack/main/static/logo.png",
+          title: GM_info.script.name,
+          tag: GM_info.script.namespace,
+          image: GM_info.script.icon,
           highlight: false,
           silent: true,
           timeout: 3000,
